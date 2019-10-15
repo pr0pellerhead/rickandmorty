@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text , ScrollView } from 'react-native';
+import { NativeRouter, Switch, Route } from 'react-router-native';
 import Header from '../Header';
 import CharacterList from '../CharacterList';
+import CharacterDetails from '../CharacterDetails';
 
 class Main extends React.Component {
     constructor() {
@@ -18,19 +20,31 @@ class Main extends React.Component {
         )
         .then(res => res.json())
         .then(data => {
-            console.log(data);
             this.setState({characters: data.results});
         });
     }
 
     render() {
         return (
-            <View>
-                <Header/>
-                <ScrollView>
-                    <CharacterList characters={this.state.characters}/>
-                </ScrollView>
-            </View>
+            <NativeRouter>
+                <View>
+                    <Header/>
+                    <ScrollView>
+                        <Switch>
+                            <Route 
+                                exact 
+                                path="/" 
+                                render={() => <CharacterList characters={this.state.characters}/>}
+                            />
+                            <Route 
+                                exact 
+                                path="/character/:id" 
+                                component={CharacterDetails}
+                            />
+                        </Switch>
+                    </ScrollView>
+                </View>
+            </NativeRouter>
         );
     }
 }
