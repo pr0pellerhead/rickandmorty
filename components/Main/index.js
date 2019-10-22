@@ -5,30 +5,29 @@ import Header from '../Header';
 import CharacterList from '../CharacterList';
 import CharacterDetails from '../CharacterDetails';
 import { connect } from 'react-redux';
+import {fetchCharacters} from '../../actions'
 
 const mapStateToProps = (state) => {
     return {
-        characters: [...state.characters]
+        characters: state.characters
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchCharacters: () => {
+            dispatch(fetchCharacters());
+        }
     }
 }
 
 class MainCom extends React.Component {
     constructor() {
         super();
-        this.state = {
-            characters: [],
-        };
     }
 
     componentDidMount() {
-        fetch(
-            'https://rickandmortyapi.com/api/character/',
-            {method: 'get'}
-        )
-        .then(res => res.json())
-        .then(data => {
-            this.setState({characters: data.results});
-        });
+        this.props.fetchCharacters();
     }
 
     render() {
@@ -40,7 +39,7 @@ class MainCom extends React.Component {
                         <Route 
                             exact 
                             path="/" 
-                            render={() => <CharacterList characters={this.state.characters}/>}
+                            render={() => <CharacterList characters={this.props.characters}/>}
                         />
                         <Route 
                             exact 
@@ -54,6 +53,6 @@ class MainCom extends React.Component {
     }
 }
 
-const Main = connect(mapStateToProps)(MainCom);
+const Main = connect(mapStateToProps, mapDispatchToProps)(MainCom);
 
 export default Main;
